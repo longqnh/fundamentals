@@ -351,7 +351,90 @@
         - https://leetcode.com/problems/search-in-rotated-sorted-array/
 
 
-13. Dijkstra:
+13. Trie (prefix tree):
+    - Trie is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker
+    ```
+    public class Node {
+        public Node[] children;
+        public boolean isEnd;
+    
+        Node() {
+            this.children = new Node[26]; // 26 alphabet characters
+            this.isEnd = false;
+        }
+    
+        public void set(char c, Node node) {
+            this.children[c - 'a'] = node;
+        }
+    
+        public Node get(char c) {
+            return this.children[c - 'a'];
+        }
+    
+        public boolean contains(char c) {
+            return get(c) != null;
+        }
+    }
+    
+    public class Trie {
+        Node root;
+        
+        Trie() {
+            this.root = new Node();
+        }
+    
+        public void insert(String word) {
+            Node node = root;
+            for (char c : word.toCharArray()) {
+                if (!node.contains(c)) {
+                    node.set(c, new Node());
+                }
+                node = node.get(c);
+            }
+            node.isEnd = true;
+        }
+    
+        public boolean search(String word) {
+            Node node = searchPrefix(word);
+            return node != null && node.isEnd;
+        }
+    
+        public boolean startsWith(String prefix) {
+            return searchPrefix(prefix) != null;
+        }
+    
+        private Node searchPrefix(String prefix) {
+            Node node = root;
+            for (char c : prefix.toCharArray()) {
+                if (!node.contains(c)) {
+                    return null;
+                }
+                node = node.get(c);
+            }
+            
+            return node;
+        }
+    }
+    ```
+    - Time Complexity: O(n) - where n is the length of word in each operation (insert, search, startsWith)
+    - Space Complexity: O(total number of char of all words)
+    - Practice:
+        - https://leetcode.com/problems/implement-trie-prefix-tree/
+        - https://leetcode.com/problems/map-sum-pairs/
+        - https://leetcode.com/problems/longest-word-in-dictionary/
+        - https://leetcode.com/problems/search-suggestions-system/
+        - https://leetcode.com/problems/design-search-autocomplete-system/
+    
+
+15. Suffix Trie:
+    - Same as prefix trie but build from bottom to top
+    - Practice:
+        - https://leetcode.com/problems/stream-of-characters/
+        - https://leetcode.com/problems/prefix-and-suffix-search/
+        - https://leetcode.com/problems/remove-sub-folders-from-the-filesystem/
+
+
+16. Dijkstra:
     - Purpose: To find the shortest path in a weighted graph
     - Note: Dijkstra only works correctly in non-negative weight
     - Practice:
@@ -396,3 +479,101 @@
     - Avoid:
         - Chaining: each slot of the table is a linked list
         - Open addressing
+    
+
+2. Reliability:
+    - The system should continue working correctly even in the face of adversity (hardware or software faults, and even human error)
+    - How to achieve High Availability:
+        - Monitoring
+        - Fault tolerance:
+            - Remove SPoF (single point of failure)
+                - Server has to be stateless
+                - Make sure each server can handle extra load
+                - N + 2 rule: if your system needs N servers, make it N + 2 => 1 extra for upgrade or testing and 1 for failure
+    
+
+3. Scalability:
+    - The ability of a system to continue working as user load and data grow
+    - Common metrics:
+        - Throughput: The number of queries or requests processed in a given period. Eg: query per second (qps), request per second (rps)
+        - Latency: response time
+  
+  
+4. Latency:
+    - Mean: Average of all request's latency
+    - Percentile: The response time threshold at which x% of request are faster than that particular threshold
+    
+
+5. Maintainability:
+    - Operability: Make it easy for operations team to keep the system running smoothly
+    - Simplicity: Make it easy for new engineers to understand the system
+    - Evolvability: Meke it easy for engineers to make changes to the system in the future
+
+
+6. CAP theorem:
+    - CAP theorem states it is impossible for a distributed system to simultaneously provide more than two of these three guarantees: 
+        - Consistency: All clients see the same data at the same time no matter which node they connect to
+        - Availability: Any client which requests data gets a response even if some of the nodes are down
+        - Partition tolerance: A partition indicates a communication break between two nodes. Partition tolerance means the system continues to operate despite network partitions
+    
+
+## Database
+1. Sharding:
+    - Storing a large database across multiple machines
+    - Why sharding:
+        - A single machine, or database server, can only store a limited amount of data
+        - The database becomes bottleneck if the data volume becomes too large and too many users attempt to use the application to read or save information simultaneously
+    - Benefits:
+        - Reduce latency
+        - Increase throughput
+        - Improve availability
+        - Scalable
+    - How to shard?
+        - Shard by key range. Eg: Shard A contains names that starts with A - I, shard B contains names that starts with J - S, shard C contains names that starts with T to Z
+            - Cons: Data hotspots (the amount of names starts with A - I (shard A) usually larger than the amount of names starts with T - Z (shard C))
+        - Shard by hash of key: shard key is produced by a hash function
+    - However, sharding is not perfect. Why??
+        - Data hotspots: Some of the shards become unbalance due to the uneven distribution of data
+        - Application Complexity: Most database management systems do not have built-in sharding features. This means that database designer and software developers must manually split, distribute, and manage the database
+        - Infra & operational cost
+    
+
+2. Replication:
+    - Database replication can be used in many database management systems, usually with a master/slave relationship between the original (master) and the copies (slaves)
+        - Master: Only write
+        - Slave: Copy data from master, and support only read
+    - Advantages:
+        - Better performance: In the master-slave model, all writes and updates happen in master nodes; whereas, read operations are distributed across slave nodes. This model improves performance because it allows more queries to be processed in parallel.
+        - Reliability: If one of your database servers is destroyed by a natural disaster, such as a typhoon or an earthquake, data is still preserved. You do not need to worry about data loss because data is replicated across multiple locations.
+        - High availability: By replicating data across different locations, your website remains in operation even if a database is offline as you can access data stored in another database server.
+    
+
+3. How DBMS store data on hard disk?
+    - Database is just a bunch of files on disk
+    - Storage manager is the one that maintain the database files
+    - It organizes file as a collection of pages
+    - A page is a fixed-size block of data:
+        - Contains records, meta data, indexes
+        - MySQL: 16KB (default)
+        - MS SQL, PostgreSQL: 8KB
+    - In a page, all records belong to same table
+    - When DBMS read data, it reads by page
+    
+
+4. Index:
+    - A database index is a data structure that improves the speed of data retrieval operations on database table
+    - Types:
+        - Hash indexes
+        - B+ Tree
+        - SSTables (NoSQL)
+    
+    4.1. Hash Indexes:
+    - Based on a Hash Table
+        - Key: hash code of the indexed columns
+        - Value: pointer to the corresponding row
+        - Only useful for exact look up. Cannot support range query, unequal condition (>, < , >=, <=)
+        - Eg: SELECT * FROM students WHERE name = 'Long';
+        - DBMS calculates hash code of 'Long' by using hash function, and look for it in the hash table
+    
+
+## Security

@@ -349,7 +349,7 @@
     - Practice:
         - https://leetcode.com/problems/peak-index-in-a-mountain-array/
         - https://leetcode.com/problems/search-in-rotated-sorted-array/
-
+        - https://leetcode.com/discuss/study-guide/786126/Python-Powerful-Ultimate-Binary-Search-Template.-Solved-many-problems
 
 13. Trie (prefix tree):
     - Trie is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. There are various applications of this data structure, such as autocomplete and spellchecker
@@ -442,6 +442,166 @@
         - https://leetcode.com/problems/path-with-maximum-probability/
         - https://leetcode.com/problems/cheapest-flights-within-k-stops/
     
+
+17. LinkedList:
+    - Singly linked list: Each node points to the next node, the last node points to `null`
+    - Doubly linked lst: Each node points to the next node and the previous node, the last node points to `null`
+    - Circular linked list: Can be either singly linked list or doubly linked list. The last node points to the first node.
+    - Common questions:
+        - Getting the `kth` from last node: Have two pointers, where one is `k` nodes ahead of the other. When the node ahead reaches the end, the other node is `k` nodes behind.
+        - Detecting cycles: Have two pointers, where one pointer increments twice as much as the other, if the two pointers meet, means that there is a cycle.
+        - Getting the middle node: Have two pointers, where one pointer increments twice as much as the other. When the faster node reaches the end of the list, the slower node will be at the middle
+        - Reverse linked list:
+        ```
+          public ListNode reverseList(ListNode head) {
+              ListNode prev = null;
+              ListNode curr = head;
+              while (curr != null) {
+                  ListNode nextTemp = curr.next;
+                  curr.next = prev;
+                  prev = curr;
+                  curr = nextTemp;
+              }
+              return prev;
+          }
+        ```
+    - Practice: https://leetcode.com/discuss/study-guide/1800120/Become-Master-In-Linked-List
+    
+
+18. Queue:
+    - Standard queue: FIFO
+    - Circular queue: 
+        - FIFO
+        - Last position connects to the first position
+        - Benefit: Reuse space in front of queue
+        - https://leetcode.com/problems/design-circular-queue/
+    - Double Ended Queue:
+        - Elements can be added or removed from either front (head) or back (tail)
+
+
+19. Stack:
+    - Standard stack: LIFO
+    - Monotonic stack: LIFO, maintains the increasing/decreasing of value
+    - Practice: https://leetcode.com/discuss/study-guide/2703748/Monotonic-stack-study-summary
+    
+
+20. Heap:
+    - Application: When we need to get the smallest/largest element quickly and the array is updated frequently.
+    - Min Heap: A binary tree where root is the min value and child's value `>=` parent's value
+        ```
+            PriorityQueue<...> minHeap = new PriorityQueue<>();
+        ```
+    - Max Heap: A binary tree where root is the max value and child's value `<=` parent's value
+        ```
+            PriorityQueue<...> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        ```
+    - Practice: https://leetcode.com/discuss/study-guide/1360400/Priority-queue-%2B-problems-to-practice
+
+
+21. Binary Search Tree:
+    - A special version of binary tree where the left node is less than its parent node, and right node is greater than its parent node.
+    - Note: BST is not a balanced tree      
+    - Traversal:
+        - In-order: Left -> Root -> Right (will return a sorted array)
+        - Pre-order: Root -> Left -> Right
+        - Post-order: Left -> Right -> Root
+    - Practice: https://leetcode.com/discuss/study-guide/1212004/Binary-Trees-study-guide
+    
+    
+22. Topological Sort:
+
+
+
+23. KMP Algorithm:
+
+
+
+24. Rabin Karp Algorithm:
+
+
+
+25. Cycle:
+    - linkedlist
+    - graph
+    
+
+26. Union Find:
+    ```
+    class UnionFind {
+        private int[] parent;
+        private int[] rank;
+    
+        public UnionFind(int size) {
+            parent = new int[size];
+            rank = new int[size];
+    
+            // Initialize each element as a separate set with rank 0
+            for (int i = 0; i < size; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+    
+        // Find the representative of the set to which element x belongs
+        public int find(int x) {
+            if (parent[x] != x) {
+                // Path compression: make every node on the path point to the root
+                parent[x] = find(parent[x]);
+            }
+            return parent[x];
+        }
+    
+        // Union (merge) two sets based on their ranks to keep the tree balanced
+        public void union(int x, int y) {
+            int rootX = find(x);
+            int rootY = find(y);
+    
+            if (rootX != rootY) {
+                if (rank[rootX] < rank[rootY]) {
+                    parent[rootX] = rootY;
+                } else if (rank[rootX] > rank[rootY]) {
+                    parent[rootY] = rootX;
+                } else {
+                    // If ranks are equal, arbitrarily choose one as the parent and increment its rank
+                    parent[rootX] = rootY;
+                    rank[rootY]++;
+                }
+            }
+        }
+    }
+    ```
+
+
+27. Backtracking:
+    - Template
+    ```
+        void backtrack(..., current, result) {
+            if (condition == true) {
+                result.add(current);
+                return;
+            }
+            for (int i = num; i <= last; i++) {
+                current.add(i);                             // explore candidate
+                backtrack(..., current, result);
+                current.remove(current.size() - 1);         // remove candidate
+            }
+        }
+    ```
+
+
+28. Interval:
+    - Check if two intervals overlap:
+    ```
+        boolean isOverlap(int[] first, int[] second) {
+            return first[0] < second[1] && second[0] < first[1];
+        }
+    ```
+    - Merge two intervals
+    ```
+        int[] merge(int[] first, int[] second) {
+            return new int[]{Math.min(first[0], second[0]), Math.max(first[1], second[1])};
+        }
+    ```
 
 ## System Design
 1. Hashing:

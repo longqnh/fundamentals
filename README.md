@@ -498,7 +498,62 @@
     - Practice: https://leetcode.com/discuss/study-guide/1360400/Priority-queue-%2B-problems-to-practice
 
 
-21. Binary Search Tree:
+21. Binary Tree:
+    - Implementation
+    ```
+        // Definition for a binary tree node.
+        public class TreeNode {
+             int val;
+             TreeNode left;
+             TreeNode right;
+             TreeNode() {}
+             TreeNode(int val) { this.val = val; }
+             TreeNode(int val, TreeNode left, TreeNode right) {
+                 this.val = val;
+                 this.left = left;
+                 this.right = right;
+             }
+        }
+    ```
+    - DFS on binary tree:
+    ```
+        void dfs(TreeNode root) {
+            Deque<TreeNode> stack = new ArrayDeque<>();
+            stack.offerFirst(root);
+            while (!stack.isEmpty()) {
+                TreeNode curr = stack.pollFirst();
+                if (curr.left != null) {
+                    stack.offerFirst(curr.left);
+                }
+                if (curr.right != null) {
+                    stack.offerFirst(curr.right);
+                }
+            }
+        }
+        // NOTE: Change `stack` to `queue` for BFS  
+    ```
+    - Traverse tree level by level:
+    ```
+        void traverse(TreeNode root) {
+            Deque<TreeNode> queue = new ArrayDeque<>();
+            queue.offerLast(root);
+            while (!stack.isEmpty()) {
+                int size = queue.size();
+                for (int i = 0; i < size; i++) {
+                    TreeNode curr = stack.pollFirst();
+                    if (curr.left != null) {
+                        stack.offerLast(curr.left);
+                    }
+                    if (curr.right != null) {
+                        stack.offerLast(curr.right);
+                    }
+                }
+            }
+        }
+    ```    
+
+
+22. Binary Search Tree:
     - A special version of binary tree where the left node is less than its parent node, and right node is greater than its parent node.
     - Note: BST is not a balanced tree      
     - Traversal:
@@ -508,24 +563,23 @@
     - Practice: https://leetcode.com/discuss/study-guide/1212004/Binary-Trees-study-guide
     
     
-22. Topological Sort:
+23. Topological Sort:
 
 
 
-23. KMP Algorithm:
+24. KMP Algorithm:
 
 
 
-24. Rabin Karp Algorithm:
+25. Rabin Karp Algorithm:
 
 
 
-25. Cycle:
-    - linkedlist
-    - graph
+26. Detect Cycle in directed graph:
     
 
-26. Union Find:
+
+27. Union Find:
     ```
     class UnionFind {
         private int[] parent;
@@ -572,7 +626,7 @@
     ```
 
 
-27. Backtracking:
+28. Backtracking:
     - Template
     ```
         void backtrack(..., current, result) {
@@ -589,7 +643,7 @@
     ```
 
 
-28. Interval:
+29. Interval:
     - Check if two intervals overlap:
     ```
         boolean isOverlap(int[] first, int[] second) {
@@ -664,18 +718,74 @@
     - Percentile: The response time threshold at which x% of request are faster than that particular threshold
     
 
-5. Maintainability:
+5. Bandwidth:
+    - Data volume per unit time
+
+
+6. Maintainability:
     - Operability: Make it easy for operations team to keep the system running smoothly
     - Simplicity: Make it easy for new engineers to understand the system
     - Evolvability: Meke it easy for engineers to make changes to the system in the future
 
 
-6. CAP theorem:
+7. CAP theorem:
     - CAP theorem states it is impossible for a distributed system to simultaneously provide more than two of these three guarantees: 
         - Consistency: All clients see the same data at the same time no matter which node they connect to
         - Availability: Any client which requests data gets a response even if some of the nodes are down
         - Partition tolerance: A partition indicates a communication break between two nodes. Partition tolerance means the system continues to operate despite network partitions
+    - According to the CAP theorem, any distributed system needs to pick two out of the three properties.
+
     
+8. Remote Procedure Call (RPC)
+    - Assume that your application needs to call another method from another node in a distributed system. You can not do that since your programming language doesn't support it, and RPC was born to solve this problem
+    - RPC makes a call to a remote function look the same as a local function call
+    - RPC principles:
+        - "Location transparency": System hides where a resource is located
+        - Question:
+            - What if the service crashes during the function call?
+            - What if a message is lost?
+            - What if a message is delayed?
+            - If something goes wrong, is it safe to retry?
+    
+
+9. Fault Tolerance:
+    - Failure: The whole system is not work
+    - Fault: Some part of the system is not work
+        - Node fault: crash
+        - Network fault: dropping or significantly delaying messages
+    - Fault Tolerance: The whole system continues working, despite faults (some maximum number of faults assumed)
+    - Single point of failure (SPOF): Node/network link whose fault leads to failure
+    
+
+10. Idempotency:
+    - 
+
+
+11. Proxy vs Reverse Proxy:
+    - 
+
+
+12. Load Balancing:
+
+
+13. MapReduce:
+
+
+15. HTTP Polling vs Long Polling vs WebSocket:
+
+
+16. Caching:
+
+
+17. REST vs RESTful:
+
+
+18. What is the difference between GRPC API and REST API?
+
+
+2-phase commit
+
+
 
 ## Database
 1. Sharding:
@@ -698,7 +808,7 @@
         - Infra & operational cost
     
 
-2. Replication:
+2. Replication: Keeping a copy of same data on multiple nodes
     - Database replication can be used in many database management systems, usually with a master/slave relationship between the original (master) and the copies (slaves)
         - Master: Only write
         - Slave: Copy data from master, and support only read
@@ -724,6 +834,7 @@
     - A database index is a data structure that improves the speed of data retrieval operations on database table
     - Types:
         - Hash indexes
+        - B Tree
         - B+ Tree
         - SSTables (NoSQL)
     
@@ -736,4 +847,36 @@
         - DBMS calculates hash code of 'Long' by using hash function, and look for it in the hash table
     
 
+Partitioning in SQL
+Database isolation
+Optimistic vs Pessimistic locking
+Explain N + 1 problem in ORM and how to fix?
+Relational DB vs Non-relational DB
+How to make sure data is consistent between DB and Redis?
+You have a directory of very large files, that are all the same size, some are duplicated. How do you find out which files are duplicated? (Should not use byte-to-byte comparision).
+Expect: hashing, SHA, MD5, hashing collision
+Cache stampede
+Eventual consistency
+SOLID principles:
+What is Race Condition? Compare mutex, semaphore and spinlock
+What is deadlock and how to prevent it?
+Composite index in range query
+
 ## Security
+How to store password in Database securely?
+Explain how RSA works
+How XSS attack work? How to prevent it?
+What is CORS?
+JWT, how to validate JWT?
+
+
+## Networks
+1. What happens when you type a URL into web browser?
+2. What happens in TCP handshake? Why it is 3-way handshake instead of 2-way
+3. Compare TCP and UDP. What to use what?
+4. Explain TLS handshake process
+5. What are some useful HTTP headers?
+6. How DNS works?
+7. Can you use a DNS server anywhere or must it be near the user?
+8. How do you know the IP address of the user?
+
